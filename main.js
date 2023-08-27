@@ -46,6 +46,7 @@ function buyButtonClicked(){
     while(cartContent.hasChildNodes()){
         cartContent.removeChild(cartContent.firstChild)
     }
+    localStorage.removeItem('carrito')
     updateTotal();
 }
 
@@ -82,36 +83,41 @@ function saveInLocalStorage(item) {
         let exist = itemFound.length >= 1 ? true : false;
         if(exist) {
             alert('Ya añadiste este producto a tu carrito');
+            return false
         } else {
             cartList.push(item)
             localStorage.setItem(`carrito`, JSON.stringify(cartList));
         }
+        return true
     } else {
         cartList.push(item)
         localStorage.setItem(`carrito`, JSON.stringify(cartList));
+        return true
     }
 }
 
 function addProductToCart(title, price, productImg, id) {
     var item = {id, title, price, productImg};
-    saveInLocalStorage(item)
-    var cartShopBox = document.createElement('div');
-    cartShopBox.classList.add('cart-box');
-    cartShopBox.id = id;
-    var cartItems = document.getElementsByClassName('cart-content')[0]
-    var cartBoxContent = `
-        <img src="${(productImg)}" alt="" class="cart-img">
-        <div class="detail-box">
-            <div class="cart-product-title">${title}</div>
-            <div class="cart-price">${price}</div>
-            <input type="number" value="1" class="cart-quantity">
-        </div>
-        <i class='bx bx-trash-alt cart-remove' ></i>`
+    if(saveInLocalStorage(item)){
 
-    cartShopBox.innerHTML = cartBoxContent
-    cartItems.append(cartShopBox)
-    cartShopBox.getElementsByClassName('cart-remove')[0].addEventListener('click', removeCartItem)
-    cartShopBox.getElementsByClassName('cart-quantity')[0].addEventListener('change', removeCartItem)
+        var cartShopBox = document.createElement('div');
+        cartShopBox.classList.add('cart-box');
+        cartShopBox.id = id;
+        var cartItems = document.getElementsByClassName('cart-content')[0]
+        var cartBoxContent = `
+            <img src="${(productImg)}" alt="" class="cart-img">
+            <div class="detail-box">
+                <div class="cart-product-title">${title}</div>
+                <div class="cart-price">${price}</div>
+                <input type="number" value="1" class="cart-quantity">
+            </div>
+            <i class='bx bx-trash-alt cart-remove' ></i>`
+    
+        cartShopBox.innerHTML = cartBoxContent
+        cartItems.append(cartShopBox)
+        cartShopBox.getElementsByClassName('cart-remove')[0].addEventListener('click', removeCartItem)
+        cartShopBox.getElementsByClassName('cart-quantity')[0].addEventListener('change', removeCartItem)
+    }
 }
 
 function updateTotal(){
