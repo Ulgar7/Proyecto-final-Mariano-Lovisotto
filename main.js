@@ -166,3 +166,55 @@ function loadStorageCart() {
 }
 
 loadStorageCart()
+
+
+
+
+
+
+
+
+var loginForm = document.getElementById("login-form");
+var loginMessage = document.getElementById("login-message");
+
+
+loginForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+    var email = document.getElementById("login-email").value;
+    var password = document.getElementById("login-password").value;
+
+    
+    var apiUrl = "https://reqres.in/api/login";
+
+    
+    fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        if (data.token) {
+            
+            loginMessage.textContent = "Inicio de sesión exitoso";
+            
+        } else {
+            
+            loginMessage.textContent = "Inicio de sesión incorrecto";
+        }
+    })
+    .catch(function(error) {
+        console.error("Error de inicio de sesión:", error);
+        loginMessage.textContent = "Ocurrió un error al iniciar sesión";
+    });
+});
+
+
+
